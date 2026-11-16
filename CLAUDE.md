@@ -154,6 +154,11 @@ Cloudflare: `SLACK_WEBHOOK_URL`, `GOOGLE_SERVICE_ACCOUNT_KEY` and
 into a file, and never commit `.dev.vars` (it holds them for local testing
 only).
 
+Preview links don't get these secrets unless someone also added them under
+**Previews Base** in Cloudflare, so on a preview the form may show its error
+message instead of sending. That is expected. Check a form change after it is
+published, and say so in your reply when the change touches a form.
+
 Each form saves to its own spreadsheet tab. The website fills the first
 columns (Submitted, each field, Page); the client uses the columns after them
 for notes. Never change the order of the fields in `FORMS` for an existing
