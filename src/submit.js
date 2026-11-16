@@ -9,9 +9,10 @@
 // submission, and the Slack message says when the spreadsheet missed it.
 //
 // To add a form: add an entry to FORMS below (`sheet` is the spreadsheet tab it
-// saves to), add that tab to the spreadsheet with the header row Submitted,
-// each field label in order, Page. Then give the <form> a matching
-// data-form="..." attribute and the hidden "company" spam-trap field.
+// saves to; the first submission adds the tab if it doesn't exist). Then give
+// the <form> a matching data-form="..." attribute and the hidden "fax_number"
+// spam-trap field. Checkbox groups arrive as one value, choices separated by
+// commas.
 
 import { saveToSheet, sheetsConfigured } from './sheets.js';
 
@@ -23,7 +24,8 @@ const FORMS = {
   },
 };
 
-const SPAM_TRAP_FIELD = 'company';
+// Hidden field only bots fill in. Its name must never match a real field.
+const SPAM_TRAP_FIELD = 'fax_number';
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const DEFAULT_MAX_LENGTH = 2000;
 const MAX_BODY_LENGTH = 20000;

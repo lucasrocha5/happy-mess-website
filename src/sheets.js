@@ -10,7 +10,8 @@
 //
 // Each form writes to its own tab (the `sheet` name in FORMS, src/submit.js).
 // Columns: Submitted, then each form field in order, then Page. Columns to the
-// right of those are free for the client's own notes.
+// right of those are free for the client's own notes. If the tab doesn't exist
+// yet, the first submission adds it with a header row.
 
 const SCOPE = 'https://www.googleapis.com/auth/spreadsheets';
 const SHEETS_API = 'https://sheets.googleapis.com/v4/spreadsheets';
@@ -113,6 +114,43 @@ const columnLetter = (index) => {
   return letters;
 };
 
+// A form whose tab doesn't exist yet gets one, laid out like the Waitlist tab:
+// bold header row (Submitted, each field label, Page, Notes) kept in view,
+// dates shown as yyyy-mm-dd hh:mm, and a filter on the header.
+async function addTab(env, token, form) {
+  const headers = ['Submitted', ...form.fields.map((field) => field.label), 'Page', 'Notes'];
+  const sheetId = Math.floor(Math.random() * 2_000_000_000) + 1;
+  const response = await fetch(`${apiBase(env)}/${env.GOOGLE_SHEET_ID}:batchUpdate`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      requests: [
+        { addSheet: { properties: { sheetId, title: form.sheet, gridProperties: { frozenRowCount: 1 } } } },
+        {
+          updateCells: {
+            start: { sheetId, rowIndex: 0, columnIndex: 0 },
+            rows: [{ values: headers.map((text) => ({ userEnteredValue: { stringValue: text }, userEnteredFormat: { textFormat: { bold: true } } })) }],
+            fields: 'userEnteredValue,userEnteredFormat.textFormat.bold',
+          },
+        },
+        {
+          repeatCell: {
+            range: { sheetId, startRowIndex: 1, startColumnIndex: 0, endColumnIndex: 1 },
+            cell: { userEnteredFormat: { numberFormat: { type: 'DATE_TIME', pattern: 'yyyy-mm-dd hh:mm' } } },
+            fields: 'userEnteredFormat.numberFormat',
+          },
+        },
+        { setBasicFilter: { filter: { range: { sheetId, startRowIndex: 0, startColumnIndex: 0, endColumnIndex: headers.length } } } },
+      ],
+    }),
+  });
+  // Two first submissions at the same moment can both try to add the tab; one "already exists" is fine.
+  if (!response.ok) {
+    const text = await response.text();
+    if (!/already exists/i.test(text)) throw new Error(`Could not add the "${form.sheet}" tab (${response.status}): ${text}`);
+  }
+}
+
 // values: the form's field values, in the order of its fields
 export async function saveToSheet(env, form, values, page) {
   const token = await getAccessToken(env);
@@ -122,13 +160,20 @@ export async function saveToSheet(env, form, values, page) {
   const range = `${tab}!A:${columnLetter(row.length - 1)}`;
 
   // RAW keeps every value as typed, so text that looks like a formula is never run.
-  const response = await fetch(
-    `${apiBase(env)}/${env.GOOGLE_SHEET_ID}/values/${encodeURIComponent(range)}:append?valueInputOption=RAW`,
-    {
+  const append = () =>
+    fetch(`${apiBase(env)}/${env.GOOGLE_SHEET_ID}/values/${encodeURIComponent(range)}:append?valueInputOption=RAW`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({ values: [row] }),
-    },
-  );
+    });
+
+  let response = await append();
+  if (response.status === 400) {
+    const text = await response.text();
+    // Google's answer when the tab doesn't exist: add it, then try once more.
+    if (!/Unable to parse range/i.test(text)) throw new Error(`Google Sheets answered 400: ${text}`);
+    await addTab(env, token, form);
+    response = await append();
+  }
   if (!response.ok) throw new Error(`Google Sheets answered ${response.status}: ${await response.text()}`);
 }
