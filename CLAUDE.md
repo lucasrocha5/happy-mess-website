@@ -156,7 +156,7 @@ only).
 
 Preview links don't get these secrets unless someone also added them under
 **Previews Base** in Cloudflare, so on a preview the form may show its error
-message instead of sending. That is expected. Check a form change after it is
+message instead of sending. That's expected. Check a form change after it is
 published, and say so in your reply when the change touches a form.
 
 Each form saves to its own spreadsheet tab. The website fills the first
