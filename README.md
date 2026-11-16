@@ -37,7 +37,7 @@ setting. `CLAUDE.md` lists the rules that keep it that way.
 The client asks for changes in plain language in the Claude app's Code tab
 (or at claude.ai/code), using their own paid Claude plan with this repository
 connected. Claude follows `CLAUDE.md`: it makes the change, replies with
-Cloudflare's preview link, and publishes (merges into `main`) only when the
+the preview link, and publishes (merges into `main`) only when the
 client says so. The client never needs to open GitHub.
 
 Setup: in the client's Claude account, connect GitHub and give the Claude
@@ -66,8 +66,14 @@ browser. The form won't send from there.
    application and import the GitHub repository. Keep the suggested
    settings: no build command, deploy command `npx wrangler deploy`.
 3. In the Worker's **Settings > Build**, make sure preview builds are on, with
-   the Preview command `npx wrangler preview`. Every pull request then gets a
-   preview link, posted as a comment on the pull request.
+   the Preview command `npx wrangler preview`. Every pushed branch then gets a
+   preview link: `https://BRANCH-happy-mess-website.SUBDOMAIN.workers.dev`,
+   where SUBDOMAIN is the account's workers.dev subdomain (shown on the
+   Worker's overview page). Update the link in step 3 of "Preview, then
+   publish" in `CLAUDE.md` to the client's subdomain (it is `uttr` while the
+   site runs on UTTR's test account). Cloudflare may also post the link as a
+   comment on the pull request; in UTTR's test this did not happen, so
+   `CLAUDE.md` does not depend on it.
 4. Add the Slack and Google secrets (sections below).
 5. Add the client's domain to the same Cloudflare account (free; the
    registrar's nameservers are switched to Cloudflare's). Then, in the
