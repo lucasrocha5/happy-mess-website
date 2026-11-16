@@ -110,9 +110,10 @@ spreadsheet. If saving fails, the submission still reaches Slack with a note
 asking for it to be added by hand.
 
 The spreadsheet template is "Happy Mess website submissions" in UTTR's Google
-Drive. Each form has its own tab (Waitlist for now). Columns A to C are filled
-by the website (Submitted, Email, Page); column D onwards is free for the
-client's notes. The "How it works" tab explains this to the client.
+Drive. Each form has its own tab (Waitlist for now; new forms get theirs
+automatically). Columns A to C are filled by the website (Submitted, Email,
+Page); column D onwards is free for the client's notes. The "How it works" tab
+explains this to the client.
 
 One-time setup:
 
@@ -125,12 +126,20 @@ One-time setup:
 2. **Time zone.** In the client's copy, set **File > Settings > Time zone** to
    the studio's time zone. The website writes times in whatever zone the
    spreadsheet uses.
-3. **The robot account.** In [Google Cloud](https://console.cloud.google.com),
-   create a project (ideally one the client owns), enable the **Google Sheets
-   API**, then create a service account under **IAM & Admin > Service
-   Accounts**. It needs no roles. Open it, go to **Keys > Add key > Create new
-   key > JSON** and download the key file. Some organizations block key
-   creation; if Google refuses, use a project outside that organization.
+3. **The robot account.** It lives in the client's own Google Cloud project,
+   so it keeps working after handover. The client signs in to
+   [Google Cloud](https://console.cloud.google.com) with the Google account
+   that owns their spreadsheet copy, creates a project named "Happy Mess
+   website" and adds admin@uttr.com as Owner (setup page, step 4). In that
+   project, enable the **Google Sheets API**, then create a service account
+   under **IAM & Admin > Service Accounts**. It needs no roles. Open it, go to **Keys > Add key > Create new
+   key > JSON** and download the key file. If the client signed in with a
+   Google Workspace account, their Cloud organization may be "secure by
+   default" (organizations created since May 2024): it blocks adding outside
+   emails (`iam.allowedPolicyMemberDomains`) and creating keys
+   (`iam.managed.disableServiceAccountKeyCreation`). Either the client's
+   Workspace admin relaxes those two policies for this project, or the
+   project is created with a Gmail account the business controls.
 4. **Share the sheet with the robot.** Share the client's copy with the
    service account's email (it ends in `iam.gserviceaccount.com`) as Editor.
 5. **Secrets.** In the Worker's **Settings > Variables and Secrets**, add two
@@ -146,8 +155,11 @@ can edit the spreadsheet. To make preview links save rows too, add the same
 secrets under **Previews Base** (ideally pointing at a test copy of the sheet).
 
 **Handover:** the client removes admin@uttr.com from the spreadsheet's sharing
-list. The robot account must stay as Editor.
+list and from the Google Cloud project. The robot account must stay as Editor
+of the spreadsheet.
 
-**Adding a form:** add a tab named like the form's `sheet` entry in
-`src/submit.js`, with the header row Submitted, each field label in order,
-Page. Then format it like the Waitlist tab.
+**Adding a form:** add an entry to `FORMS` in `src/submit.js` with a `sheet`
+(tab) name. The first submission adds that tab to the spreadsheet with a bold
+header row (Submitted, each field label in order, Page, Notes), dates as
+yyyy-mm-dd hh:mm and a filter, like the Waitlist tab. Every form also posts
+to the same Slack channel.

@@ -52,13 +52,23 @@
     form.addEventListener('submit', function (event) {
       event.preventDefault();
       if (!form.checkValidity()) {
-        show('Please enter a valid email address.', 'error');
-        if (email) email.focus();
+        // Point at the first field that needs attention, by its label.
+        var bad = form.querySelector('input:invalid, select:invalid, textarea:invalid');
+        var group = bad && bad.closest('fieldset');
+        var labelFor = bad && bad.id ? form.querySelector('label[for="' + bad.id + '"]') : null;
+        var name = (bad && (bad.type === 'radio' || bad.type === 'checkbox') && group && group.querySelector('legend')) || labelFor;
+        var text = name ? name.textContent.trim() : '';
+        show(bad && bad.type === 'email' ? 'Please enter a valid email address.'
+          : 'Please fill in: ' + (text || 'the required fields') + '.', 'error');
+        if (bad) bad.focus();
         return;
       }
 
+      // Checkbox groups send every ticked choice, joined with commas.
       var fields = {};
-      new FormData(form).forEach(function (value, key) { fields[key] = value; });
+      new FormData(form).forEach(function (value, key) {
+        fields[key] = Object.prototype.hasOwnProperty.call(fields, key) ? fields[key] + ', ' + value : value;
+      });
       var labelEl = button.querySelector('.btn__label') || button;
       var label = labelEl.textContent;
       button.disabled = true;

@@ -176,13 +176,19 @@ form: the spreadsheet columns would no longer match.
 To add a form (for example a party inquiry):
 
 1. Add an entry to `FORMS` in `src/submit.js` listing its fields and the
-   `sheet` (tab name) it saves to. Ask the client, in plain language, to add
-   that tab, or add it yourself if you can edit the spreadsheet: header row
-   Submitted, then each field label in order, then Page.
+   `sheet` (tab name) it saves to. The first submission adds that tab to the
+   spreadsheet with a header row, so there is nothing to set up there.
 2. Give the `<form>` a matching `data-form="..."` attribute, include the hidden
-   `company` spam-trap field (copy it from the waitlist form), and add a
-   `data-form-status` element after it.
+   `fax_number` spam-trap field (copy it from the waitlist form; no real field
+   may use that name), and add a `data-form-status` element after it. Put each
+   radio or checkbox group in a `<fieldset>` with a `<legend>`, and give every
+   other field a `<label for>`: error messages name the field by its label.
 3. `public/js/main.js` already handles any form with a `data-form` attribute.
+   A checkbox group arrives as one value with the ticked choices separated by
+   commas.
+4. A new form only saves after it is published (see the note on preview links
+   above). After publishing, ask the client to send one test entry and check
+   that it reached Slack and the spreadsheet.
 
 ## Adding a page
 
