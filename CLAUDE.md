@@ -24,13 +24,22 @@ commit, merge, pull request or deploy.
 Every change follows these steps. Merging into `main` publishes the live site,
 so never push to `main` or merge without the person's clear approval.
 
-1. Make the change on a new branch. Check the changed area at 390px and 1440px
-   wide (`npm run dev`, or open `public/index.html` in a browser, when one is
-   available).
-2. Open a pull request into `main` with a short plain-language title.
-3. Wait for Cloudflare's comment on the pull request with the Preview URL. It
-   appears once the preview build finishes. With the `gh` tool you can read it
-   with `gh api repos/{owner}/{repo}/issues/{number}/comments`.
+1. Make the change on a new branch. Name it with lowercase letters, numbers
+   and hyphens only, under 30 characters (for example `update-party-faq`):
+   the branch name becomes part of the preview link. Check the changed area at
+   390px and 1440px wide (`npm run dev`, or open `public/index.html` in a
+   browser, when one is available).
+2. Push the branch and open a pull request into `main` with a short
+   plain-language title. In a cloud session `gh pr create` fails (GitHub's
+   GraphQL API is blocked there), so use the REST API:
+   `gh api repos/{owner}/{repo}/pulls -f title="..." -f head=BRANCH -f base=main -f body="..."`
+3. Cloudflare builds a preview of every pushed branch in under a minute. Wait
+   until the "Workers Builds" check on the latest commit shows `completed` and
+   `success`:
+   `gh api repos/{owner}/{repo}/commits/BRANCH/check-runs --jq '.check_runs[] | .name + " " + .status + " " + (.conclusion // "")'`
+   The preview link is `https://BRANCH-happy-mess-website.uttr.workers.dev`
+   (BRANCH is the branch name). If Cloudflare also posts a comment on the pull
+   request with a Preview URL, use that one.
 4. Reply with that preview link and one or two sentences on what changed, then
    ask: "Want me to publish it?"
 5. If they ask for more changes, update the same pull request. The preview link
