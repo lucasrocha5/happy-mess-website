@@ -1,0 +1,186 @@
+# Happy Mess website: guide for AI agents
+
+This is the homepage for Happy Mess, a pottery painting party business. It is
+plain HTML, CSS and JavaScript with no build step, hosted on Cloudflare
+(free plan). Everything visitors download is in `public/`.
+
+The person asking for changes is not technical. They ask in plain language in
+the Claude app (the Code tab) or at claude.ai/code. Make the change safely and
+reply in plain language: what changed, where on the page, and the preview link.
+In replies to them, say "preview" and "publish". Don't use words like branch,
+commit, merge, pull request or deploy.
+
+## How to handle requests
+
+- Make the smallest change that does what was asked. Do not redesign, rename or
+  tidy anything that was not mentioned.
+- If a request is unclear (for example "change the price" when several prices
+  exist), ask one short question before editing.
+- Never invent facts about the business: prices, dates, addresses, policies,
+  testimonials. If a request needs a fact you were not given, ask for it.
+
+## Preview, then publish
+
+Every change follows these steps. Merging into `main` publishes the live site,
+so never push to `main` or merge without the person's clear approval.
+
+1. Make the change on a new branch. Check the changed area at 390px and 1440px
+   wide (`npm run dev`, or open `public/index.html` in a browser, when one is
+   available).
+2. Open a pull request into `main` with a short plain-language title.
+3. Wait for Cloudflare's comment on the pull request with the Preview URL. It
+   appears once the preview build finishes. With the `gh` tool you can read it
+   with `gh api repos/{owner}/{repo}/issues/{number}/comments`.
+4. Reply with that preview link and one or two sentences on what changed, then
+   ask: "Want me to publish it?"
+5. If they ask for more changes, update the same pull request. The preview link
+   stays the same.
+6. Publish only when they clearly say so ("publish it", "looks good, go live").
+   Squash-merge the pull request into `main`; Cloudflare then puts it live by
+   itself. In a cloud session, `gh pr merge` fails because GitHub's GraphQL API
+   is blocked there, so use the REST API:
+   `gh api -X PUT repos/{owner}/{repo}/pulls/{number}/merge -f merge_method=squash`
+7. Tell them it's published and that it can take a few minutes to show up.
+
+## Where things live
+
+| The request is about | Edit this |
+| --- | --- |
+| Any wording on the page, FAQ questions and answers | `public/index.html` (search for the current text) |
+| Page title and Google description | `<title>` and `<meta name="description">` in `public/index.html` |
+| Where a button or link leads | its `href` in `public/index.html` (buttons repeat in the menu, hero, cards and footer; today every button goes to `#waitlist`) |
+| Photos and illustrations | files in `public/images/`, referenced from `public/index.html` |
+| Colors, fonts, spacing | `public/css/styles.css` (color tokens are at the top) |
+| Menu, FAQ open/close, form behavior, animations | `public/js/main.js` |
+| What a form sends to Slack or saves to the spreadsheet | `src/submit.js` (Google sign-in and saving: `src/sheets.js`) |
+| Hosting settings | `wrangler.jsonc` (do not change unless asked) |
+
+### Common requests
+
+- **Edit an FAQ:** each one is a `<details class="faq__item">` block in
+  `public/index.html`. Copy a block to add one, delete a block to remove one. Only
+  the first block has the `open` attribute (starts expanded). Keep it that way
+  unless asked. On desktop the left column (heading, text and lightbulb,
+  all inside `.faq__intro`) stays in view while the questions scroll past.
+  Keep the lightbulb inside `.faq__intro` so it moves with the heading.
+- **Replace a photo:** photos come in two crops, one for desktop (for example
+  `public/images/hero.webp`) and one for mobile (`public/images/hero-mobile.webp`),
+  and each crop comes in two sizes: a regular file and a sharper `-large`
+  file (`hero.webp` and `hero-large.webp`). The page lists both in `srcset`
+  and the browser picks the right one for the screen, so phones and normal
+  screens get the small file and sharp (Retina) screens get the large one.
+  Replace all four files, keeping the same pixel sizes and proportions as the
+  files you replace so nothing is cropped oddly, and update the `alt` text to
+  describe the new photo. Save as WebP, quality 80. Make the large file from
+  the original photo, then shrink that to make the regular file (never
+  enlarge a small photo). Keep regular files under about 45 KB and large
+  files under about 75 KB. Do not change the `srcset` or `sizes` numbers
+  unless the layout changes. Big images are the quickest way to lose the 100
+  performance score.
+- **Change the waitlist confirmation message:** the `data-success` attribute on
+  the form in `public/index.html`.
+
+## Design rules
+
+The layout matches the Figma file exactly at 390px (mobile) and 1440px
+(desktop). Most numbers in `public/css/styles.css` come straight from Figma, including
+decimals. Do not round them or "clean them up".
+
+- Colors: use the tokens in `:root` (`--red`, `--black`, `--pink`, `--yellow`,
+  `--vanilla`, `--blue`, `--ink`). Never add new hex values.
+- Fonts: Be Vietnam Pro for text, Chewy for playful headings. The original
+  Be Vietnam is used only for desktop button labels and mobile footer headings,
+  because the design uses it there. No other fonts.
+- Logo: never stretch, recolor, rotate or crop it.
+- Voice: warm, playful, plain. Short sentences. American spelling.
+- Reuse existing classes (`btn btn--primary`, `btn btn--secondary`,
+  `hero__title`, `card__title`, and so on) rather than writing new styles.
+- Font sizes, line heights and letter spacing are always in `rem`
+  (1rem = 16px), never `px`, so text grows when visitors enlarge it.
+- Every button label sits inside `<span class="btn__label">`. That span is
+  what keeps the text exactly centered in the button, so copy a whole
+  existing button when adding one.
+
+## Accessibility and speed
+
+The page scores 100 for performance, accessibility, best practices and SEO in
+Lighthouse (mobile and desktop) and passes axe with no issues. Keep it there:
+
+- Text must keep a contrast of at least 4.5:1 with its background. Some
+  grays and reds are a touch darker than Figma for this reason
+  (`--text-60`, `--red-on-vanilla`, `--placeholder`, the FAQ grays). Do not
+  "fix" them back to the Figma values.
+- Every image needs `alt` text. Decorative images use `alt=""`.
+- Images below the first screen keep `loading="lazy"`. The hero photo must not
+  be lazy.
+- Links inside paragraphs stay underlined.
+- Do not add third-party scripts, trackers, widgets or web fonts without
+  asking first: each one costs speed and privacy.
+- The fonts in `public/fonts/` are trimmed to Western European characters (English,
+  Spanish, French and similar). If the client needs another language, say so
+  before adding text in it.
+
+## Motion
+
+Animations live in the "Motion and interactions" section of
+`public/css/styles.css` and in `public/js/main.js`. To animate something on any page, add an attribute in the
+HTML; no new code is needed:
+
+| Attribute | Effect |
+| --- | --- |
+| `data-reveal` | fades and rises into place the first time it scrolls into view |
+| `data-reveal="pop"` | scales up with a small bounce (stickers, icons) |
+| `data-reveal="swing"` | swings in from a tilt (illustrations) |
+| `data-reveal="draw"` | an inline SVG line draws itself (the path needs `pathLength="1"`) |
+| `data-reveal-stagger` | on a parent: its `data-reveal` children arrive one after another |
+
+Buttons, cards, menu links and FAQ items already have hover and press effects.
+Rules:
+
+- Only animate `opacity` and `transform`. Never animate size or position
+  properties (width, height, top, margin), which make the page jump.
+- Nothing may loop forever or move for more than 5 seconds on its own.
+- Everything must still work, fully visible, for visitors who turn on
+  "reduce motion" on their device. The CSS handles this already.
+- Keep it light: one effect per element, short and calm.
+
+## Forms, Google Sheets and Slack
+
+`src/` is the only server code. `src/worker.js` sends `/api/submit` to
+`src/submit.js`, which checks the submission, adds it as a row to the client's
+Google Sheet (`src/sheets.js`), and posts it to Slack. It uses secrets set in
+Cloudflare: `SLACK_WEBHOOK_URL`, `GOOGLE_SERVICE_ACCOUNT_KEY` and
+`GOOGLE_SHEET_ID`. Never write any of them, or the spreadsheet's address,
+into a file, and never commit `.dev.vars` (it holds them for local testing
+only).
+
+Each form saves to its own spreadsheet tab. The website fills the first
+columns (Submitted, each field, Page); the client uses the columns after them
+for notes. Never change the order of the fields in `FORMS` for an existing
+form: the spreadsheet columns would no longer match.
+
+To add a form (for example a party inquiry):
+
+1. Add an entry to `FORMS` in `src/submit.js` listing its fields and the
+   `sheet` (tab name) it saves to. Ask the client, in plain language, to add
+   that tab, or add it yourself if you can edit the spreadsheet: header row
+   Submitted, then each field label in order, then Page.
+2. Give the `<form>` a matching `data-form="..."` attribute, include the hidden
+   `company` spam-trap field (copy it from the waitlist form), and add a
+   `data-form-status` element after it.
+3. `public/js/main.js` already handles any form with a `data-form` attribute.
+
+## Adding a page
+
+Copy `public/index.html` to a new file in `public/` named after the address
+(for example `public/our-story.html` serves `/our-story`), keep the `<header>`
+and `<footer>`, and
+replace what is inside `<main>`. Add `data-reveal` attributes to the new
+sections (see Motion).
+
+For now the menu and footer links jump to sections of the homepage
+(`#parties`, `#diy-kits`, `#how-it-works`, `#our-story`, `#faq`) and every
+button jumps to the waitlist form (`#waitlist`). When a new page goes live,
+update the links that should open it. Planned addresses: `/book-a-party`,
+`/corporate-and-social-gatherings`, `/shop`, `/our-story`, `/contact-us`.
+Any address that does not exist shows the friendly `public/404.html` page.

@@ -1,0 +1,11 @@
+# For testing the form on your own computer only. Copy this file to .dev.vars
+# and fill in the values. Leave a line empty to skip that destination.
+# On the live site these are secrets set in Cloudflare instead.
+
+# Slack incoming webhook address
+SLACK_WEBHOOK_URL=
+
+# Google Sheets: the spreadsheet ID, and the service account's JSON key on one
+# line, wrapped in single quotes: GOOGLE_SERVICE_ACCOUNT_KEY='{"type":...}'
+GOOGLE_SHEET_ID=
+GOOGLE_SERVICE_ACCOUNT_KEY=
