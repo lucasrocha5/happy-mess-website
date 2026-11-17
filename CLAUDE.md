@@ -1,6 +1,6 @@
 # Happy Mess website: guide for AI agents
 
-This is the homepage for Happy Mess, a pottery painting party business. It is
+This is the website for Happy Mess, a pottery painting party business. It is
 plain HTML, CSS and JavaScript with no build step, hosted on Cloudflare
 (free plan). Everything visitors download is in `public/`.
 
@@ -55,11 +55,13 @@ so never push to `main` or merge without the person's clear approval.
 
 | The request is about | Edit this |
 | --- | --- |
-| Any wording on the page, FAQ questions and answers | `public/index.html` (search for the current text) |
-| Page title and Google description | `<title>` and `<meta name="description">` in `public/index.html` |
-| Where a button or link leads | its `href` in `public/index.html` (buttons repeat in the menu, hero, cards and footer; today every button goes to `#waitlist`) |
-| Photos and illustrations | files in `public/images/`, referenced from `public/index.html` |
-| Colors, fonts, spacing | `public/css/styles.css` (color tokens are at the top) |
+| Which page is which | `/` is `public/index.html`, `/book-a-party` (For the Little Ones) is `public/book-a-party.html`, `/corporate-and-social-gatherings` (For the Grown-Ups) is `public/corporate-and-social-gatherings.html`, `/shop` is `public/shop.html`, `/contact-us` is `public/contact-us.html`, `/our-story` is `public/our-story.html` |
+| Any wording, FAQ questions and answers | that page's `.html` file (search for the current text) |
+| Page title and Google description | `<title>`, `<meta name="description">` and the matching `og:` tags in that page's file |
+| Where a button or link leads | its `href` in the page files. The menu and footer repeat on every page, so change them in all six files |
+| Photos and illustrations | files in `public/images/` (each new page's files start with its name: `party-`, `shop-`, `contact-`, `story-`) |
+| Colors, fonts, spacing | shared styles and color tokens: `public/css/styles.css`. Styles for one page only: `public/css/pages/` (`parties.css` serves both party pages, plus `shop.css`, `contact.css`, `our-story.css`) |
+| Etsy links on the shop page | every link marked `data-etsy` in `public/shop.html` |
 | Menu, FAQ open/close, form behavior, animations | `public/js/main.js` |
 | What a form sends to Slack or saves to the spreadsheet | `src/submit.js` (Google sign-in and saving: `src/sheets.js`) |
 | Hosting settings | `wrangler.jsonc` (do not change unless asked) |
@@ -86,8 +88,8 @@ so never push to `main` or merge without the person's clear approval.
   files under about 75 KB. Do not change the `srcset` or `sizes` numbers
   unless the layout changes. Big images are the quickest way to lose the 100
   performance score.
-- **Change the waitlist confirmation message:** the `data-success` attribute on
-  the form in `public/index.html`.
+- **Change a form's confirmation message:** the `data-success` attribute on
+  the form. The waitlist form is on most pages, so change it on each one.
 
 ## Design rules
 
@@ -198,9 +200,8 @@ and `<footer>`, and
 replace what is inside `<main>`. Add `data-reveal` attributes to the new
 sections (see Motion).
 
-For now the menu and footer links jump to sections of the homepage
-(`#parties`, `#diy-kits`, `#how-it-works`, `#our-story`, `#faq`) and every
-button jumps to the waitlist form (`#waitlist`). When a new page goes live,
-update the links that should open it. Planned addresses: `/book-a-party`,
-`/corporate-and-social-gatherings`, `/shop`, `/our-story`, `/contact-us`.
-Any address that does not exist shows the friendly `public/404.html` page.
+Put styles used only by the new page in a new file in `public/css/pages/`,
+linked right after `/css/styles.css`. Then add the page to the menu and footer
+on every page. "Book a party" buttons go to `/book-a-party#book` (the inquiry
+form). Any address that does not exist shows the friendly `public/404.html`
+page.

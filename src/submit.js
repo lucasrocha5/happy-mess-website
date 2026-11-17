@@ -22,6 +22,49 @@ const FORMS = {
     sheet: 'Waitlist',
     fields: [{ name: 'email', label: 'Email', required: true, type: 'email', maxLength: 254 }],
   },
+  party: {
+    title: '🎂 New kids’ party inquiry',
+    sheet: 'Kids party inquiries',
+    fields: [
+      { name: 'name', label: 'Full name', required: true, maxLength: 200 },
+      { name: 'email', label: 'Email', required: true, type: 'email', maxLength: 254 },
+      { name: 'phone', label: 'Cell phone', required: true, maxLength: 40 },
+      { name: 'date', label: 'Party date', required: true, maxLength: 40 },
+      { name: 'start_time', label: 'Preferred start time', maxLength: 40 },
+      { name: 'children', label: 'Number of children', maxLength: 40 },
+      { name: 'address', label: 'Party address', required: true, maxLength: 500 },
+      { name: 'child', label: 'Birthday child’s name and age', maxLength: 200 },
+      { name: 'add_ons', label: 'Add-ons', maxLength: 200 },
+      { name: 'notes', label: 'Anything else' },
+    ],
+  },
+  event: {
+    title: '🍷 New grown-ups’ event inquiry',
+    sheet: 'Grown-ups event inquiries',
+    fields: [
+      { name: 'event_type', label: 'Type of event', required: true, maxLength: 100 },
+      { name: 'name', label: 'Full name', required: true, maxLength: 200 },
+      { name: 'email', label: 'Email', required: true, type: 'email', maxLength: 254 },
+      { name: 'company', label: 'Company', maxLength: 200 },
+      { name: 'phone', label: 'Cell phone', required: true, maxLength: 40 },
+      { name: 'date', label: 'Event date', required: true, maxLength: 40 },
+      { name: 'start_time', label: 'Preferred start time', maxLength: 40 },
+      { name: 'guests', label: 'Number of guests', maxLength: 40 },
+      { name: 'address', label: 'Event address', required: true, maxLength: 500 },
+      { name: 'add_ons', label: 'Add-ons', maxLength: 200 },
+      { name: 'notes', label: 'Anything else' },
+    ],
+  },
+  contact: {
+    title: '💬 New message from the contact page',
+    sheet: 'Messages',
+    fields: [
+      { name: 'name', label: 'Full name', required: true, maxLength: 200 },
+      { name: 'email', label: 'Email', required: true, type: 'email', maxLength: 254 },
+      { name: 'topic', label: 'What it’s about', required: true, maxLength: 100 },
+      { name: 'message', label: 'Message', required: true },
+    ],
+  },
 };
 
 // Hidden field only bots fill in. Its name must never match a real field.
