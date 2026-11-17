@@ -1,4 +1,4 @@
-// Happy Mess homepage: mobile menu, waitlist form, buttons that jump to the form, animations, footer year.
+// Happy Mess site: mobile menu, forms, buttons that jump to the waitlist, shop carousel, animations, footer year.
 
 (function () {
   // ----- Mobile menu -----
@@ -154,6 +154,31 @@
     }
   });
   window.hmMotionReady = true;
+
+  // ----- Shop page: kit carousel arrows -----
+  // Kit carousel arrows (phones and tablets). On desktop all kits show at once and the arrows stay hidden.
+  (function () {
+    var list = document.querySelector('[data-kit-list]');
+    var nav = document.querySelector('[data-kit-nav]');
+    if (!list || !nav) return;
+    var prev = nav.querySelector('[data-kit-prev]');
+    var next = nav.querySelector('[data-kit-next]');
+    nav.hidden = false;
+    function update() {
+      var max = list.scrollWidth - list.clientWidth - 2;
+      prev.disabled = list.scrollLeft <= 2;
+      next.disabled = list.scrollLeft >= max;
+    }
+    function go(dir) {
+      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      list.scrollBy({ left: dir * list.clientWidth, behavior: reduce ? 'auto' : 'smooth' });
+    }
+    prev.addEventListener('click', function () { go(-1); });
+    next.addEventListener('click', function () { go(1); });
+    list.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    update();
+  })();
 
   // ----- Footer year -----
   document.querySelectorAll('[data-year]').forEach(function (el) {

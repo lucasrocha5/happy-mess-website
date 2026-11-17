@@ -1,6 +1,6 @@
 # Happy Mess website
 
-The Happy Mess homepage: plain HTML, CSS and JavaScript, hosted on
+The Happy Mess website: plain HTML, CSS and JavaScript, hosted on
 Cloudflare's free plan, plus a few lines of server code that save form
 submissions to the client's Google Sheet and post them to Slack. There is no
 build step.
@@ -9,10 +9,12 @@ build step.
 
 ```
 public/               Everything visitors download
-  index.html          The homepage. All the text lives here.
+  index.html          The homepage
+  *.html              The other pages (book-a-party, corporate-and-social-gatherings, shop, contact-us, our-story)
   404.html            Shown for any address that doesn't exist
-  css/styles.css      All styles. Brand colors are at the top.
-  js/main.js          Mobile menu, waitlist form, buttons that jump to the form, animations
+  css/styles.css      Shared styles. Brand colors are at the top.
+  css/pages/          Styles used by one page only
+  js/main.js          Mobile menu, forms, buttons that jump to the waitlist, shop carousel, animations
   images/             Photos, illustrations, logo, favicon, link preview image
   fonts/              Be Vietnam Pro, Be Vietnam and Chewy, self-hosted and trimmed to Western European characters (English, Spanish, French and similar)
   robots.txt          Lets search engines index the site

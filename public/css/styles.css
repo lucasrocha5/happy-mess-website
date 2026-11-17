@@ -264,6 +264,9 @@ button, input { font: inherit; color: inherit; }
 /* ---------- Studio waitlist ---------- */
 
 .waitlist { position: relative; background: var(--yellow); padding: 48px 24px; overflow: hidden; }
+/* Other pages use a different band color */
+.waitlist--pink { background: var(--pink); }
+.waitlist--blue { background: var(--blue); }
 .waitlist__copy { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: flex-start; gap: 20px; }
 .label {
   padding: 6px 14px; border-radius: 999px; background: var(--white);

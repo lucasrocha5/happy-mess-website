@@ -1,0 +1,98 @@
+/* ==========================================================================
+   Our story page (/our-story). Loaded after /css/styles.css.
+   Mobile styles first (390px Figma frame), desktop from 1240px (1440px frame).
+   Reuses .story__portrait (arch photo), .wave, .waitlist and the footer.
+   ========================================================================== */
+
+/* ---------- Hero ---------- */
+
+.os-hero { position: relative; overflow: hidden; background: var(--vanilla); padding: 48px 24px 40px; }
+.os-hero__copy { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 40px; max-width: 600px; margin: 0 auto; color: var(--ink); }
+.os-hero__title { font-weight: 600; font-size: 2.375rem; line-height: 2.625rem; letter-spacing: -0.0375rem; }
+.os-hero__text { max-width: 310px; }
+
+/* Decorations: red swirl, "DIY" bubble and the "hm" doodle (mobile only) */
+.os-hero__swirl { position: absolute; right: -90.73px; top: 31px; width: 160.673px; height: auto; max-width: none; rotate: -107.18deg; }
+.os-hero__swirl path { stroke: var(--red); }
+.os-hero__diy { position: absolute; right: 14.36px; top: 54.02px; width: 102.64px; max-width: none; }
+.os-hero__hm { position: absolute; right: 85.67px; top: 24.64px; width: 83.805px; max-width: none; rotate: -12.6deg; }
+
+/* ---------- The story ---------- */
+
+.os-story { padding: 40px 24px 48px; }
+.os-story__grid { display: flex; flex-direction: column; align-items: center; gap: 28px; max-width: 600px; margin: 0 auto; }
+.os-story__top { position: relative; display: flex; flex-direction: column; gap: 28px; width: 100%; }
+.os-story__title { font-family: var(--font-fun); font-weight: 400; font-size: 2.625rem; line-height: 2.875rem; color: var(--ink); }
+.os-story__brush { position: absolute; left: 223.07px; top: -12.27px; width: 61.57px; max-width: none; }
+.os-story__text { display: flex; flex-direction: column; gap: 1.5625rem; color: var(--text-60); }
+.os-story__bottom { display: flex; flex-direction: column; gap: 39px; width: 100%; margin-top: 11px; }
+.os-story__quote {
+  display: flex; align-items: center; width: 331px; max-width: 100%; min-height: 114px; margin: 0;
+  padding: 17px 11px 12px 16px; border-radius: 30.954px; background: var(--yellow);
+  font-family: var(--font-fun); font-size: 1.75rem; line-height: 2.125rem; color: var(--ink);
+}
+.os-story__photo { width: 100%; aspect-ratio: 342 / 370; object-fit: cover; border-radius: 40px; }
+
+/* ---------- Why "mess" ---------- */
+
+.os-name { padding: 48px 24px; }
+.os-name__card {
+  display: flex; flex-direction: column; align-items: center; gap: 32px;
+  max-width: 600px; margin: 0 auto; padding: 32px; border-radius: 28px; background: var(--ink); color: var(--white);
+}
+.os-name__copy { display: flex; flex-direction: column; gap: 18px; width: 100%; }
+.os-name__title { font-family: var(--font-fun); font-weight: 400; font-size: 1.75rem; line-height: 2.125rem; }
+.os-name__pink { color: var(--pink); }
+.os-name__img { width: 100%; aspect-ratio: 466 / 207; object-fit: cover; border-radius: 20px; }
+
+.os-desktop-only { display: none; }
+
+/* ==========================================================================
+   Desktop: 1240px and up, matches the 1440px Figma frame.
+   ========================================================================== */
+
+@media (min-width: 1240px) {
+  /* Hero */
+  .os-hero { height: 348px; padding: 100px 144px; }
+  .os-hero__copy { align-items: center; gap: 28px; max-width: none; text-align: center; }
+  .os-hero__title { width: 420px; font-size: 4rem; line-height: 4rem; letter-spacing: -0.06rem; }
+  .os-hero__text { width: 656px; max-width: none; font-size: 1.25rem; line-height: 1.4; letter-spacing: -0.0125rem; }
+  .os-hero__swirl { right: auto; left: calc(50% + 424.76px); top: -21.45px; width: 476.047px; rotate: -168.22deg; }
+  .os-hero__diy { right: auto; left: calc(50% + 336px); top: 64.82px; width: 175px; }
+  .os-hero__hm { display: none; }
+
+  /* The story: photos on the left, text on the right. The quote lines up with the second photo. */
+  .os-story { padding: 50px 0 46.18px; }
+  .os-story__grid {
+    display: grid; grid-template-columns: 440px 628px; column-gap: 80px; row-gap: 62.82px; align-items: start;
+    width: 1148px; max-width: none; margin-left: calc(50% - 574px);
+  }
+  .os-story__portrait { grid-column: 1; grid-row: 1; }
+  .os-story__top { grid-column: 2; grid-row: 1; gap: 45px; }
+  .os-story__photo { grid-column: 1; grid-row: 2; width: 439px; height: 482px; margin-left: 1px; aspect-ratio: auto; }
+  .os-story__bottom { grid-column: 2; grid-row: 2; gap: 64px; margin-top: 0; }
+  .os-story__title { width: 572.735px; font-size: 4.5rem; line-height: 5rem; }
+  .os-story__brush { left: 418px; top: -25.5px; width: 150.94px; }
+  .os-story__text { gap: 1.75rem; font-size: 1.25rem; line-height: 1.4; letter-spacing: -0.0125rem; }
+  .os-story__quote {
+    width: 573px; min-height: 146px; padding: 28.09px 57.06px 17.91px 56.94px; border-radius: 40px;
+    font-size: 2.625rem; line-height: 2.875rem;
+  }
+
+  /* Why "mess" */
+  .os-desktop-only { display: block; }
+  .os-name { background: var(--mist); padding: 94px 0 25px; }
+  .os-name__card { flex-direction: row; gap: 32px; width: 1152px; max-width: none; min-height: 312px; padding: 56px; border-radius: 40px; }
+  .os-name__copy { flex: 0 0 540px; width: 540px; }
+  .os-name__title { font-size: 2.75rem; line-height: 1.4; }
+  .os-name__text { font-size: 1.25rem; line-height: 1.4; letter-spacing: -0.0125rem; }
+  .os-name__img { flex: none; width: 466px; height: 207px; margin: 0 1px; aspect-ratio: auto; }
+}
+
+/* ---------- Motion ---------- */
+
+@media (prefers-reduced-motion: no-preference) {
+  .os-hero__diy.is-visible { animation: hm-float 2.4s ease-in-out 0.9s 2; }
+  .js .os-story__brush.is-visible { transition: transform 0.5s var(--ease-spring); }
+  .os-story__top:hover .os-story__brush.is-visible { transform: rotate(-10deg); }
+}
